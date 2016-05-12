@@ -43,7 +43,7 @@ void encrypt( FILE *f )
 		}
 
 		//If no matches were found, throw a warning
-		if ( badc ) fprintf( stderr, "cmorse: unsupported character (ASCII only) - c%ld\n\r", ftell( f ) );
+		if ( badc ) fprintf( stderr, "cmorse: unsupported character (ASCII only) - %c - c%ld\n\r", c, ftell( f ) );
 	}
 }
 
