@@ -3,28 +3,37 @@
 
 #include "cmorse.h"
 
-int main( int argc, char **argv )
+void version( int exitcode )
+{
+	//Display version number
+
+	fprintf( stderr, "cmorse %s\n\r", VERSION );
+	exit( exitcode );
+}
+
+void help( int exitcode )
+{
+	//Display help message
+
+	fprintf( stderr, "cmorse %s\n\r", VERSION );
+	fprintf( stderr, "Usage: cmorse [OPTIONS] input-file\n\r" );
+	fprintf( stderr, "\t -h - show this help message\n\r" );
+	fprintf( stderr, "\t -v - show version number\n\r" );
+	fprintf( stderr, "\t -d - decrypt (from Morse to text) (not supported yet!)\n\r" );
+	exit( exitcode );
+}
+
+void encrypt( FILE *in )
 {
 	unsigned char i, badc;
-	FILE *in;
 	wchar_t c;
 
-	if ( argc == 1 || argc > 2 )
-	{
-		fprintf( stderr, "%s: usage: %s input-file\n\r", argv[0], argv[0] );
-		exit( 1 );
-	}
-
-	if ( ( in = fopen( argv[1], "r" ) ) == NULL )
-	{
-		fprintf( stderr, "%s: unable to open input file\n\r", argv[0] );
-		exit( 1 );
-	}
-
+	//Read characters from input file
 	while ( ( c = getc( in ) ) != EOF )
 	{
 		badc = 1;
 
+		//Iterate through pseudo-hash, looking for matches
 		for ( i = 0; i < 52; i++ )
 		{
 			if ( tolower( c ) == (wchar_t) morse[i][0][0] )
@@ -34,10 +43,52 @@ int main( int argc, char **argv )
 			}
 		}
 
-		if ( badc ) fprintf( stderr, "%s: unsupported character (ASCII only) - c%ld\n\r", argv[0], ftell( in ) );
+		//If no matches were found, throw a warning
+		if ( badc ) fprintf( stderr, "cmorse: unsupported character (ASCII only) - c%ld\n\r", ftell( in ) );
+	}
+}
+
+void decrypt( FILE *in )
+{
+
+}
+
+int main( int argc, char **argv )
+{
+	unsigned char i, flags;
+	FILE *f;
+
+	//If ran without arguments
+	if ( argc == 1 )
+		help( 1 );
+
+	//Search argv for supported arguments
+	for ( i = 0; i < argc; i++ )
+	{
+		if ( !strcmp( argv[i], "-h" ) )
+			help( 0 );
+
+		if ( !strcmp( argv[i], "-v" ) )
+			version( 0 );
+
+		if ( !strcmp( argv[i], "-d" ) )
+			flags |= FLAG_DECRYPT;
 	}
 
-	fclose( in );
+	//Open input file
+	if ( ( f = fopen( argv[argc - 1], "r" ) ) == NULL )
+	{
+		fprintf( stderr, "cmorse: unable to open input file\n\r" );
+		help( 1 );
+	}
+
+	//Encrypt or decrypt file
+	if ( flags & FLAG_DECRYPT )
+		decrypt( f );
+	else
+		encrypt( f  );
+
+	fclose( f );
 	printf( "\n\r" );
 	return 0;
 }

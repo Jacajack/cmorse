@@ -3,6 +3,11 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <wchar.h>
+#include <string.h>
+
+#define VERSION "v0.1-beta"
+
+#define FLAG_DECRYPT 1
 
 const char morse[52][2][7] =
 {
