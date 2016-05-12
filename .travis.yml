@@ -1,0 +1,13 @@
+sudo: required
+language: c
+before_install:
+  - sudo apt-get update
+install:
+  - sudo apt-get install pastebinit
+script:
+  - make all
+after_success:
+  - echo "Quick brown fox jumps over the lazy dog. 0123456789" > mesg.txt
+  - ./bin/cmorse mesg.txt > mesg.morse
+  - pastebinit -i mesg.txt
+  - pastebinit -i mesg.morse
