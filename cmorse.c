@@ -23,13 +23,13 @@ void help( int exitcode )
 	exit( exitcode );
 }
 
-void encrypt( FILE *in )
+void encrypt( FILE *f )
 {
 	unsigned char i, badc;
 	wchar_t c;
 
 	//Read characters from input file
-	while ( ( c = getc( in ) ) != EOF )
+	while ( ( c = getc( f ) ) != EOF )
 	{
 		badc = 1;
 
@@ -44,11 +44,11 @@ void encrypt( FILE *in )
 		}
 
 		//If no matches were found, throw a warning
-		if ( badc ) fprintf( stderr, "cmorse: unsupported character (ASCII only) - c%ld\n\r", ftell( in ) );
+		if ( badc ) fprintf( stderr, "cmorse: unsupported character (ASCII only) - c%ld\n\r", ftell( f ) );
 	}
 }
 
-void decrypt( FILE *in )
+void decrypt( FILE *f )
 {
 
 }
@@ -56,7 +56,7 @@ void decrypt( FILE *in )
 int main( int argc, char **argv )
 {
 	unsigned char i, flags;
-	FILE *f;
+	FILE *inputfile;
 
 	//If ran without arguments
 	if ( argc == 1 )
@@ -76,7 +76,7 @@ int main( int argc, char **argv )
 	}
 
 	//Open input file
-	if ( ( f = fopen( argv[argc - 1], "r" ) ) == NULL )
+	if ( ( inputfile = fopen( argv[argc - 1], "r" ) ) == NULL )
 	{
 		fprintf( stderr, "cmorse: unable to open input file\n\r" );
 		help( 1 );
@@ -84,11 +84,11 @@ int main( int argc, char **argv )
 
 	//Encrypt or decrypt file
 	if ( flags & FLAG_DECRYPT )
-		decrypt( f );
+		decrypt( inputfile );
 	else
-		encrypt( f  );
+		encrypt( inputfile );
 
-	fclose( f );
+	fclose( inputfile );
 	printf( "\n\r" );
 	return 0;
 }
