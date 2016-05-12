@@ -3,18 +3,16 @@
 
 #include "cmorse.h"
 
+//Display version number
 void version( int exitcode )
 {
-	//Display version number
-
 	fprintf( stderr, "cmorse %s\n\r", VERSION );
 	exit( exitcode );
 }
 
+//Display help message
 void help( int exitcode )
 {
-	//Display help message
-
 	fprintf( stderr, "cmorse %s\n\r", VERSION );
 	fprintf( stderr, "Usage: cmorse [OPTIONS] input-file\n\r" );
 	fprintf( stderr, "\t -h - show this help message\n\r" );
@@ -23,6 +21,7 @@ void help( int exitcode )
 	exit( exitcode );
 }
 
+//Text -> Morse conversion
 void encrypt( FILE *f )
 {
 	unsigned char i, badc;
@@ -48,6 +47,7 @@ void encrypt( FILE *f )
 	}
 }
 
+//Morse -> Text conversion
 void decrypt( FILE *f )
 {
 
@@ -65,21 +65,23 @@ int main( int argc, char **argv )
 	//Search argv for supported arguments
 	for ( i = 0; i < argc; i++ )
 	{
-		if ( !strcmp( argv[i], "-h" ) )
+		//Show help message
+		if ( !strcmp( argv[i], "-h" ) || !strcmp( argv[i], "--help" ) )
 			help( 0 );
 
-		if ( !strcmp( argv[i], "-v" ) )
+		//Show version number
+		if ( !strcmp( argv[i], "-v" ) || !strcmp( argv[i], "--version" ) )
 			version( 0 );
 
-		if ( !strcmp( argv[i], "-d" ) )
+		if ( !strcmp( argv[i], "-d" ) || !strcmp( argv[i], "--decrypt" ) )
 			flags |= FLAG_DECRYPT;
 	}
 
 	//Open input file
 	if ( ( inputfile = fopen( argv[argc - 1], "r" ) ) == NULL )
 	{
-		fprintf( stderr, "cmorse: unable to open input file\n\r" );
-		help( 1 );
+		fprintf( stderr, "cmorse: unable to open input file.\nTry -h option to get more information.\n\r" );
+		exit( 1 );
 	}
 
 	//Encrypt or decrypt file
@@ -90,5 +92,6 @@ int main( int argc, char **argv )
 
 	fclose( inputfile );
 	printf( "\n\r" );
+
 	return 0;
 }
