@@ -1,2 +1,2 @@
-# cmorse
-A simple text to Morse's alphabet converter
+# CMORSE
+`cmorse` is a simple text to Morse's alphabet converter.
