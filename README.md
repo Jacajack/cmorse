@@ -2,7 +2,7 @@
 [![The MIT License](https://img.shields.io/badge/license-MIT-orange.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 [![Travis CI](https://img.shields.io/travis/Jacajack/cmorse.svg?style=flat-square)](https://travis-ci.org/Jacajack/cmorse)
 
-`cmorse` is a simple text to Morse code converter.
+`cmorse` is a simple text to Morse code converter
 
 [Cmorse on launchpad...](https://launchpad.net/cmorse)
 
@@ -18,8 +18,7 @@ Encoded data will be outputted through `stdout`. You can redirect it to another 
 
 If you want to see more options use `cmorse -h` to display help message.
 
-## Building cmorse
- - `make all`
- - `make install`
-
-To uninstall run `make uninstall`
+## Building from source
+ - Clone git repository - `git clone https://github.com/Jacajack/cmorse.git && cd cmorse`
+ - Invoke makefile - `make all`
+ - To install use `sudo make install`, and to uninstall - `sudo make uninstall`.
