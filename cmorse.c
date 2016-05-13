@@ -53,11 +53,17 @@ void encrypt( char *str, size_t len )
 void decrypt( char *str, size_t len )
 {
 	char *morsechar = (char *) malloc( 1 );
-	unsigned char j, spaces = 0;
+	unsigned char badc, j, spaces = 0;
 	size_t i, charend = 0;
 
 	for ( i = 0; i < len; i++ )
 	{
+		badc = 1;
+
+		//Ignore newlines etc.
+		if ( str[i] == '\n' || str[i] == '\r' || str[i] == '\t' )
+			continue;
+
 		//Is space?
 		if ( str[i] == ' ' )
 		{
@@ -70,9 +76,8 @@ void decrypt( char *str, size_t len )
 			spaces = 0;
 		}
 
-
 		charend = i;
-		while ( str[charend] != ' ' && charend < len )
+		while ( str[charend] != ' ' && str[charend] != '\0' && str[charend] != '\n' && str[charend] != '\r' && str[charend] != '\t' && charend < len )
 			charend++;
 
 		morsechar = (char *) realloc( morsechar, charend - i + 1 );
@@ -82,9 +87,13 @@ void decrypt( char *str, size_t len )
 		for ( j = 0; j < SUPPORTED_CHARACTERS; j++ )
 		{
 			if ( !strcmp( morsechar, morse[j][1] ) )
-				printf( "%c", morse[j][0][0] );
+			{
+				printf( "%c", ( flags & FLAG_UPPERCASE ) ? toupper( morse[j][0][0] ) : morse[j][0][0] );
+				badc = 0;
+			}
 		}
 
+		if ( badc ) fprintf( stderr, "cmorse: unsupported Morse code - '%s' - c%ld\n\r", morsechar, i );
 
 		i = charend - 1;
 	}
@@ -94,7 +103,7 @@ void decrypt( char *str, size_t len )
 
 int main( int argc, char **argv )
 {
-	unsigned char i, flags;
+	unsigned char i;
 	char *inputstr;
 	size_t inputfilelen, inputstrlen;
 	FILE *inputfile;
@@ -114,8 +123,13 @@ int main( int argc, char **argv )
 		if ( !strcmp( argv[i], "-v" ) || !strcmp( argv[i], "--version" ) )
 			version( 0 );
 
+		//Decrpyt morse message
 		if ( !strcmp( argv[i], "-d" ) || !strcmp( argv[i], "--decrypt" ) )
 			flags |= FLAG_DECRYPT;
+
+		//Output uppercase letters
+		if ( !strcmp( argv[i], "-u" ) || !strcmp( argv[i], "--uppercase" ) )
+			flags |= FLAG_UPPERCASE;
 	}
 
 	//Open input file
@@ -133,7 +147,7 @@ int main( int argc, char **argv )
 	rewind( inputfile );
 
 	//Allocate memory
-	if ( ( inputstr = (char *) malloc( inputfilelen + 1) ) == NULL )
+	if ( ( inputstr = (char *) malloc( inputfilelen + 1 ) ) == NULL )
 	{
 		fprintf( stderr, "cmorse: memory allocation error.\n\r" );
 		exit( 1 );

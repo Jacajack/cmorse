@@ -5,10 +5,13 @@
 #include <wchar.h>
 #include <string.h>
 
-#define VERSION "v0.1-beta"
+#define VERSION "v0.5-beta"
 #define SUPPORTED_CHARACTERS 58
 
 #define FLAG_DECRYPT 1
+#define FLAG_UPPERCASE 2
+
+unsigned char flags = 0;
 
 const char morse[SUPPORTED_CHARACTERS][2][8] =
 {
