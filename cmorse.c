@@ -17,7 +17,8 @@ void help( int exitcode )
 	fprintf( stderr, "Usage: cmorse [OPTIONS] input-file\n\r" );
 	fprintf( stderr, "\t -h - show this help message\n\r" );
 	fprintf( stderr, "\t -v - show version number\n\r" );
-	fprintf( stderr, "\t -d - decrypt (from Morse to text) (not supported yet!)\n\r" );
+	fprintf( stderr, "\t -d - decrypt (from Morse to text) (risky!)\n\r" );
+	fprintf( stderr, "\t -u - output uppercase letter when decrypting\n\r" );
 	exit( exitcode );
 }
 
@@ -44,7 +45,7 @@ void encrypt( char *str, size_t len )
 		}
 
 		//If no matches were found, throw a warning
-		if ( badc ) fprintf( stderr, "cmorse: unsupported character (ASCII only) - %c - c%ld\n\r", str[i], i );
+		if ( badc ) fprintf( stderr, "cmorse: unsupported character (ASCII only) - %c (0x%x) - c%ld\n\r", str[i], str[i], i );
 	}
 }
 
