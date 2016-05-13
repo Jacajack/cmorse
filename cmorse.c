@@ -22,33 +22,34 @@ void help( int exitcode )
 }
 
 //Text -> Morse conversion
-void encrypt( FILE *f )
+void encrypt( char *str )
 {
-	unsigned char i, badc;
-	wchar_t c;
+	unsigned char j, badc;
+	size_t i, len = strlen( str );
 
 	//Read characters from input file
-	while ( ( c = getc( f ) ) != EOF )
+	for ( i = 0; i < len; i++ )
 	{
 		badc = 1;
 
 		//Iterate through pseudo-hash, looking for matches
-		for ( i = 0; i < SUPPORTED_CHARACTERS && badc; i++ )
+		for ( j = 0; j < SUPPORTED_CHARACTERS && badc; j++ )
 		{
-			if ( tolower( c ) == (wchar_t) morse[i][0][0] )
+			if ( tolower( str[i] ) == morse[j][0][0] )
 			{
-				printf( "%s ", morse[i][1] );
+				//If next character is space, do not add additional one
+				printf( "%s%s", morse[j][1], ( i + 1 < len ) ? ( ( str[i + 1] == ' ' ) ? "" : " " ) : "" );
 				badc = 0;
 			}
 		}
 
 		//If no matches were found, throw a warning
-		if ( badc ) fprintf( stderr, "cmorse: unsupported character (ASCII only) - %c - c%ld\n\r", c, ftell( f ) );
+		if ( badc ) fprintf( stderr, "cmorse: unsupported character (ASCII only) - %c - c%ld\n\r", str[i], i );
 	}
 }
 
 //Morse -> Text conversion
-void decrypt( FILE *f )
+void decrypt( char *str )
 {
 
 }
@@ -56,6 +57,8 @@ void decrypt( FILE *f )
 int main( int argc, char **argv )
 {
 	unsigned char i, flags;
+	char *inputstr;
+	size_t inputfilelen;
 	FILE *inputfile;
 
 	//If ran without arguments
@@ -84,13 +87,33 @@ int main( int argc, char **argv )
 		exit( 1 );
 	}
 
-	//Encrypt or decrypt file
-	if ( flags & FLAG_DECRYPT )
-		decrypt( inputfile );
-	else
-		encrypt( inputfile );
+	//Loading whole file to memory, instead of streaming may be a not good idea, but this solution, makes managing ' ' easier
+
+	//Get file length
+	fseek( inputfile, 0, SEEK_END );
+	inputfilelen = ftell( inputfile );
+	rewind( inputfile );
+
+	//Allocate memory
+	if ( ( inputstr = (char *) malloc( inputfilelen + 1) ) == NULL )
+	{
+		fprintf( stderr, "cmorse: memory allocation error.\n\r" );
+		exit( 1 );
+	}
+
+	//Read input file
+	while ( ( inputstr[ftell( inputfile )] = getc( inputfile ) ) != EOF );
+	inputstr[inputfilelen] = 0;
 
 	fclose( inputfile );
+
+	//Encrypt or decrypt file
+	if ( flags & FLAG_DECRYPT )
+		decrypt( inputstr );
+	else
+		encrypt( inputstr );
+
+	free( inputstr );
 	printf( "\n\r" );
 
 	return 0;
