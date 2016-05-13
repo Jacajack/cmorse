@@ -1,0 +1,10 @@
+Package: cmorse
+Version: 1.0-1
+Architecture: amd64
+Maintainer: Jacek Wieczorek <mrjjot@gmail.com>
+Installed-Size: 21
+Depends: libc6 (>= 2.14)
+Section: text
+Priority: optional
+Homepage: https://github.com/Jacajack/cmorse
+Description: Simple text to Morse code converter.
