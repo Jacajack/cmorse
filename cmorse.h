@@ -8,8 +8,9 @@
 #define VERSION "v0.5-beta"
 #define SUPPORTED_CHARACTERS 57
 
-#define FLAG_DECRYPT 1
-#define FLAG_UPPERCASE 2
+#define FLAG_DECRYPT ( 1 << 0 )
+#define FLAG_UPPERCASE ( 1 << 1 )
+#define FLAG_NOPROSIGNS ( 1 << 2 )
 
 unsigned char flags = 0;
 

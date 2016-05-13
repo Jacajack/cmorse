@@ -17,8 +17,9 @@ void help( int exitcode )
 	fprintf( stderr, "Usage: cmorse [OPTIONS] input-file\n\r" );
 	fprintf( stderr, "\t -h - show this help message\n\r" );
 	fprintf( stderr, "\t -v - show version number\n\r" );
-	fprintf( stderr, "\t -d - decrypt (from Morse to text) (risky!)\n\r" );
+	fprintf( stderr, "\t -d - decrypt (from Morse to text)\n\r" );
 	fprintf( stderr, "\t -u - output uppercase letter when decrypting\n\r" );
+	fprintf( stderr, "\t -p - disable automatic prosign encryption\n\r" );
 	exit( exitcode );
 }
 
@@ -38,6 +39,12 @@ void encrypt( char *str, size_t len )
 		{
 			if ( tolower( str[i] ) == morse[j][0][0] )
 			{
+				if ( ( str[i] == '\n' || str[i] == '\r' ) && flags & FLAG_NOPROSIGNS )
+				{
+					badc = 0;
+					continue;
+				}
+
 				//If next character is space, do not add additional one
 				printf( "%s%s", morse[j][1], ( i + 1 < len ) ? ( ( str[i + 1] == ' ' ) ? "" : " " ) : "" );
 				badc = 0;
@@ -76,18 +83,25 @@ void decrypt( char *str, size_t len )
 			spaces = 0;
 		}
 
+		//Look for next meaningful character
 		charend = i;
 		while ( str[charend] != ' ' && str[charend] != '\0' && str[charend] != '\n' && str[charend] != '\r' && str[charend] != '\t' && charend < len )
 			charend++;
 
+		//Copy morse code to temporary array
 		morsechar = (char *) realloc( morsechar, charend - i + 1 );
 		memcpy( morsechar, str + i, charend - i );
 		morsechar[charend - i] = 0;
-		//printf( "%s ", morsechar );
 		for ( j = 0; j < SUPPORTED_CHARACTERS; j++ )
 		{
 			if ( !strcmp( morsechar, morse[j][1] ) )
 			{
+				if ( ( morse[j][0][0] == '\n' || morse[j][0][0] == '\r' ) && flags & FLAG_NOPROSIGNS )
+				{
+					badc = 0;
+					continue;
+				}
+
 				printf( "%c", ( flags & FLAG_UPPERCASE ) ? toupper( morse[j][0][0] ) : morse[j][0][0] );
 				badc = 0;
 			}
@@ -130,6 +144,10 @@ int main( int argc, char **argv )
 		//Output uppercase letters
 		if ( !strcmp( argv[i], "-u" ) || !strcmp( argv[i], "--uppercase" ) )
 			flags |= FLAG_UPPERCASE;
+
+		//Output uppercase letters
+		if ( !strcmp( argv[i], "-p" ) || !strcmp( argv[i], "--prosignsdisabled" ) )
+			flags |= FLAG_NOPROSIGNS;
 	}
 
 	//Open input file
