@@ -5,7 +5,7 @@
 #include <wchar.h>
 #include <string.h>
 
-#define VERSION "v0.5-beta"
+#define VERSION "v1.0"
 #define SUPPORTED_CHARACTERS 57
 
 #define FLAG_DECRYPT ( 1 << 0 )
