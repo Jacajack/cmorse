@@ -72,5 +72,5 @@ const char morse[SUPPORTED_CHARACTERS][2][8] =
 	{" ", " "},
 	{"\n", ".-.-" },
 	{"\r", ".-.-" },
-	{"\t", "-...-"}
+	//{"\t", "-...-"} (conflicting with '=')
 };

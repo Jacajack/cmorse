@@ -22,10 +22,10 @@ void help( int exitcode )
 }
 
 //Text -> Morse conversion
-void encrypt( char *str )
+void encrypt( char *str, size_t len )
 {
 	unsigned char j, badc;
-	size_t i, len = strlen( str );
+	size_t i;
 
 	//Read characters from input file
 	for ( i = 0; i < len; i++ )
@@ -49,16 +49,53 @@ void encrypt( char *str )
 }
 
 //Morse -> Text conversion
-void decrypt( char *str )
+void decrypt( char *str, size_t len )
 {
+	char *morsechar = (char *) malloc( 1 );
+	unsigned char j, spaces = 0;
+	size_t i, charend = 0;
 
+	for ( i = 0; i < len; i++ )
+	{
+		//Is space?
+		if ( str[i] == ' ' )
+		{
+			spaces++;
+			continue;
+		}
+		else
+		{
+			for ( j = 0; j < ( spaces >> 1 ); j++ ) printf( " " );
+			spaces = 0;
+		}
+
+
+		charend = i;
+		while ( str[charend] != ' ' && charend < len )
+			charend++;
+
+		morsechar = (char *) realloc( morsechar, charend - i + 1 );
+		memcpy( morsechar, str + i, charend - i );
+		morsechar[charend - i] = 0;
+		//printf( "%s ", morsechar );
+		for ( j = 0; j < SUPPORTED_CHARACTERS; j++ )
+		{
+			if ( !strcmp( morsechar, morse[j][1] ) )
+				printf( "%c", morse[j][0][0] );
+		}
+
+
+		i = charend - 1;
+	}
+
+	free( morsechar );
 }
 
 int main( int argc, char **argv )
 {
 	unsigned char i, flags;
 	char *inputstr;
-	size_t inputfilelen;
+	size_t inputfilelen, inputstrlen;
 	FILE *inputfile;
 
 	//If ran without arguments
@@ -104,14 +141,15 @@ int main( int argc, char **argv )
 	//Read input file
 	while ( ( inputstr[ftell( inputfile )] = getc( inputfile ) ) != EOF );
 	inputstr[inputfilelen] = 0;
+	inputstrlen = strlen( inputstr );
 
 	fclose( inputfile );
 
 	//Encrypt or decrypt file
 	if ( flags & FLAG_DECRYPT )
-		decrypt( inputstr );
+		decrypt( inputstr, inputstrlen );
 	else
-		encrypt( inputstr );
+		encrypt( inputstr, inputstrlen );
 
 	free( inputstr );
 	printf( "\n\r" );
