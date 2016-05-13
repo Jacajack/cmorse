@@ -14,11 +14,12 @@ void version( int exitcode )
 void help( int exitcode )
 {
 	fprintf( stderr, "cmorse %s\n\r", VERSION );
-	fprintf( stderr, "Usage: cmorse [OPTIONS] input-file\n\r" );
+	fprintf( stderr, "Usage: cmorse [OPTIONS]\n\r" );
 	fprintf( stderr, "\t -h - show this help message\n\r" );
+	fprintf( stderr, "\t -i <filename> - input file name\n\r" );
 	fprintf( stderr, "\t -v - show version number\n\r" );
 	fprintf( stderr, "\t -d - decrypt (from Morse to text)\n\r" );
-	fprintf( stderr, "\t -u - output uppercase letter when decrypting\n\r" );
+	fprintf( stderr, "\t -u - output uppercase text when decrypting\n\r" );
 	fprintf( stderr, "\t -p - disable automatic prosign encryption\n\r" );
 	exit( exitcode );
 }
@@ -118,7 +119,7 @@ void decrypt( char *str, size_t len )
 int main( int argc, char **argv )
 {
 	unsigned char i;
-	char *inputstr;
+	char *inputstr = NULL, *inputfilename = NULL;
 	size_t inputfilelen, inputstrlen;
 	FILE *inputfile;
 
@@ -148,10 +149,29 @@ int main( int argc, char **argv )
 		//Output uppercase letters
 		if ( !strcmp( argv[i], "-p" ) || !strcmp( argv[i], "--prosignsdisabled" ) )
 			flags |= FLAG_NOPROSIGNS;
+
+		//Specify input file
+		if ( !strcmp( argv[i], "-i" ) || !strcmp( argv[i], "--input" ) )
+		{
+			if ( i + 1 < argc )
+				inputfilename = argv[i + 1];
+			else
+			{
+				fprintf( stderr, "cmorse: missing input file name.\nTry -h option to get more information.\n\r" );
+				exit( 1 );
+			}
+		}
 	}
 
 	//Open input file
-	if ( ( inputfile = fopen( argv[argc - 1], "r" ) ) == NULL )
+
+	if ( inputfilename == NULL )
+	{
+		fprintf( stderr, "cmorse: missing input file name.\nTry -h option to get more information.\n\r" );
+		exit( 1 );
+	}
+
+	if ( ( inputfile = fopen( inputfilename, "r" ) ) == NULL )
 	{
 		fprintf( stderr, "cmorse: unable to open input file.\nTry -h option to get more information.\n\r" );
 		exit( 1 );
