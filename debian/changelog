@@ -1,0 +1,5 @@
+cmorse (1.0-1) unstable; urgency=medium
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- Jacek Wieczorek <mrjjot@gmail.com>  Fri, 13 May 2016 23:09:28 +0200
