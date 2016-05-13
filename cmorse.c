@@ -33,7 +33,7 @@ void encrypt( FILE *f )
 		badc = 1;
 
 		//Iterate through pseudo-hash, looking for matches
-		for ( i = 0; i < SUPPORTED_CHARACTERS; i++ )
+		for ( i = 0; i < SUPPORTED_CHARACTERS && badc; i++ )
 		{
 			if ( tolower( c ) == (wchar_t) morse[i][0][0] )
 			{
