@@ -6,10 +6,11 @@
 #include <string.h>
 
 #define VERSION "v0.1-beta"
+#define SUPPORTED_CHARACTERS 58
 
 #define FLAG_DECRYPT 1
 
-const char morse[58][2][8] =
+const char morse[SUPPORTED_CHARACTERS][2][8] =
 {
 	{"a", ".-"},
 	{"b", "-..."},
