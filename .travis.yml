@@ -7,7 +7,6 @@ install:
 script:
   - make all
 after_success:
-  - echo "Quick brown fox jumps over the lazy dog. 0123456789" > mesg.txt
-  - ./bin/cmorse mesg.txt > mesg.morse
-  - pastebinit -i mesg.txt
+  - ./bin/cmorse test.txt > mesg.morse
+  - pastebinit -i test.txt
   - pastebinit -i mesg.morse
