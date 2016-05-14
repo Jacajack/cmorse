@@ -12,11 +12,19 @@
  - Install `cmorse` package - `sudo apt-get install cmorse`
 
 
-## Fine, but how do I use it?
-To invoke cmorse simply run `cmorse -i example.txt`, where `example.txt` is file you want to convert into Morse code.
-Encoded data will be outputted through `stdout`. You can redirect it to another file like this: `cmorse -i example.txt > encoded.txt`.
+## Usage
+`cmorse [OPTIONS] -i <input file>`
 
-If you want to see more options use `cmorse -h` to display help message.
+Supported command line options:
+ - `-h` / `--help` - Display help message
+ - `-v` / `--version` - Display software version number
+ - `-i` / `--input` - Specify input file in next argument
+ - `-d` / `--decrypt` - Convert from Morse code to regular text
+ - `-u` / `--uppercase` - Output uppercase text, when decrypting
+ - `-p` / `--prosginsdisabled` - Disable automatic prosign insertion (like `.-.-` instead of new line)
+
+For example, `cmorse -i example.txt > example.morse` will encode `example.txt` and store Morse code in `example.morse`.
+To reverse process use `cmorse -d -i example.morse > decrypted.txt`.
 
 ## Building from source
  - Clone git repository - `git clone https://github.com/Jacajack/cmorse.git && cd cmorse`
