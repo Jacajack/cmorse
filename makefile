@@ -1,7 +1,8 @@
-$CC = gcc
+CC = gcc
+CFLAGS = -Wall
 
 all: clean FORCE cmorse.c cmorse.h
-	gcc -Wall -o bin/cmorse cmorse.c
+	$(CC) $(CFLAGS) -o bin/cmorse cmorse.c
 
 install:
 	-mkdir -p $(DESTDIR)/usr
