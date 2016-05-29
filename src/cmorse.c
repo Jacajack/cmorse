@@ -1,7 +1,7 @@
 /* This is simple text-Morse's alphabet converter writen in C */
 /* By Jacajack (Jacek Wieczorek) <mrjjot@gmail.com> 2016 */
 
-#include "cmorse.h"
+#include "../include/cmorse.h"
 
 //Display version number
 void version( int exitcode )
@@ -206,7 +206,7 @@ int main( int argc, char **argv )
 		exit( 1 );
 	}
 
-	printf( "%d\n", inputfilename );
+	DEBUG( "%d", inputfilename );
 	if ( inputfile == stdin ) printf( "stdin\n" );
 	inputstr = afgets( inputfile );
 	inputstrlen = strlen( inputstr );
