@@ -3,6 +3,7 @@ cmorse (1.1-1) xenial; urgency=medium
   * Add support for stdin
   * User can now specify output file
   * Added manual (actually one revision before this release)
+  * Change source code directory structure
 
  -- Jacek Wieczorek <mrjjot@gmail.com>  Sun, 29 May 2016 12:06:00 +0200
 
