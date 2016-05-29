@@ -107,7 +107,7 @@ void decrypt( FILE *outputfile, char *str, size_t len )
 		}
 		else
 		{
-			for ( j = 0; j < ( spaces >> 1 ); j++ ) printf( " " );
+			for ( j = 0; j < ( spaces >> 1 ); j++ ) fprintf( outputfile, " " );
 			spaces = 0;
 		}
 
