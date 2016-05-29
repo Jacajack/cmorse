@@ -5,6 +5,14 @@
 #include <wchar.h>
 #include <string.h>
 
+#ifndef DEBUG_ENABLED
+#define DEBUG_ENABLED 0
+#else
+#define DEBUG_OUT printf
+#endif
+#include "debug.h"
+
+
 #define VERSION "v1.1"
 #define SUPPORTED_CHARACTERS 57
 
