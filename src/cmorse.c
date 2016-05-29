@@ -230,11 +230,7 @@ int main( int argc, char **argv )
 		encrypt( outputfile, inputstr, inputstrlen );
 
 	//Close input file
-	if ( outputfile != stdout )
-	{
-		fprintf( outputfile, "\n\r" );
-		fclose( outputfile );
-	}
+	if ( outputfile != stdout ) fclose( outputfile );
 
 	free( inputstr );
 	printf( "\n\r" );
