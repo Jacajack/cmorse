@@ -14,7 +14,7 @@
 
 
 #define VERSION "v1.1"
-#define SUPPORTED_CHARACTERS 57
+#define SUPPORTED_CHARACTERS 56
 
 #define FLAG_DECRYPT ( 1 << 0 )
 #define FLAG_UPPERCASE ( 1 << 1 )
@@ -85,5 +85,5 @@ const char morse[SUPPORTED_CHARACTERS][2][8] =
 
 	//Prosigns (in fact, unsure how to implement correctly)
 	{"\n", ".-.-" },
-	{"\r", ".-.-" }
+	//{"\r", ".-.-" } - carriage return is ignored since it doubled line spacing
 };
