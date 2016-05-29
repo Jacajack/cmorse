@@ -1,16 +1,22 @@
-.TH cmorse 1 "29 May 2016" "v1.0"
+.TH cmorse 1 "29 May 2016" "v1.1"
 .SH NAME
 cmorse - text to Morse code converter (and vice versa)
 
 .SH SYNOPSIS
 cmorse
-.B [-h] [-v] [-d] [-u] [-p] [-i
+.B [-h] [-i
 .I filename
 .B ]
+.B [-o
+.I filename
+.B ] [-v] [-d] [-u] [-p]
 
 .SH DESCRIPTION
-Outputs either a text decoded from Morse code, or a Morse code generated from given file, through stdout.
+Coverts Morse code to text, or vice versa.
 Currently, only ASCII characters are supported.
+If input file is not specified, cmorse will read stdin, until EOF, or EOT character occurs.
+Similarly, if output file is not specified, cmorse will write output to stdout.
+Normally, decoded letters are outputted lowercase.
 
 .PP
 .SS Morse code format
@@ -23,6 +29,15 @@ spaces.
 .SH OPTIONS
 .B -h, --help
 - display a help message
+
+.B -i, --input
+.I filename
+- specifies input file name. Given file should not contain non-ASCII characters, otherwise they won't be encrypted
+and cmorse will throw errors.
+
+.B -o, --output
+.I filename
+- specifies output file name
 
 .B -v, --version
 - display a version information
@@ -37,14 +52,11 @@ spaces.
 - do not change special characters (new line, etc.) to Morse prosigns
 (other Morse code applications may not handle them way cmorse does)
 
-.B -i, --input
-.I filename
-- specifies input file name. Given file should not contain non-ASCII characters, otherwise they won't be encrypted
-and cmorse will throw errors.
-
 .SH EXAMPLES
  cmorse -i testfile.txt > output.morse
  cmorse -d -i output.morse > output.txt
+ cmorse -i testfile2.txt -o output2.morse
+ cmorse -d -i output2.morse -o output2.txt
 
 .SH BUGS
 There are no known bugs, if you find some, please report them here:
