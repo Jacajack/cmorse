@@ -1,0 +1,70 @@
+.TH cmorse 1 "29 May 2016" "v1.1"
+.SH NAME
+cmorse - text to Morse code converter (and vice versa)
+
+.SH SYNOPSIS
+cmorse
+.B [-h] [-i
+.I filename
+.B ]
+.B [-o
+.I filename
+.B ] [-v] [-d] [-u] [-p]
+
+.SH DESCRIPTION
+Coverts Morse code to text, or vice versa.
+Currently, only ASCII characters are supported.
+If input file is not specified, cmorse will read stdin, until EOF, or EOT character occurs.
+Similarly, if output file is not specified, cmorse will write output to stdout.
+Normally, decoded letters are outputted lowercase.
+
+.PP
+.SS Morse code format
+Morse code is written as lines, dots and spaces. There is
+.B one
+space between each two letter codes. Words are separated by
+.B two
+spaces.
+
+.SH OPTIONS
+.B -h, --help
+- display a help message
+
+.B -i, --input
+.I filename
+- specifies input file name. Given file should not contain non-ASCII characters, otherwise they won't be encrypted
+and cmorse will throw errors.
+
+.B -o, --output
+.I filename
+- specifies output file name
+
+.B -v, --version
+- display a version information
+
+.B -d, --decode
+- decode from Morse code to text file (assumes input file is in Morse code format)
+
+.B -u, --uppercase
+- output uppercase letters when decoding
+
+.B -p, --noprosigns
+- do not change special characters (new line, etc.) to Morse prosigns
+(other Morse code applications may not handle them way cmorse does)
+
+.SH EXAMPLES
+ cmorse -i testfile.txt > output.morse
+ cmorse -d -i output.morse > output.txt
+ cmorse -i testfile2.txt -o output2.morse
+ cmorse -d -i output2.morse -o output2.txt
+
+.SH BUGS
+There are no known bugs, if you find some, please report them here:
+.I https://github.com/Jacajack/cmorse/issues
+
+.SH AUTHOR
+Jacek Wieczorek <mrjjot@gmail.com>
+
+.SH COPYRIGHT
+ Copyright (c) 2016 Jacajack
+ The MIT License (MIT)
