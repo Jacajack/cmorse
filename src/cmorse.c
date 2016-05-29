@@ -207,7 +207,6 @@ int main( int argc, char **argv )
 	}
 
 	DEBUG( "%d", inputfilename );
-	if ( inputfile == stdin ) printf( "stdin\n" );
 	inputstr = afgets( inputfile );
 	inputstrlen = strlen( inputstr );
 
