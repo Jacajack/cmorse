@@ -80,7 +80,7 @@ void encrypt( FILE *outputfile, char *str, size_t len )
 		}
 
 		//If no matches were found, throw a warning
-		if ( badc ) fprintf( stderr, "cmorse: unsupported character (ASCII only) - %c (0x%x) - c%ld\n\r", str[i], str[i], i );
+		if ( badc ) fprintf( stderr, "cmorse: unsupported character (ASCII only) - %c (0x%x) - c%ld\n\r", str[i], str[i], (long) i );
 	}
 }
 
@@ -135,7 +135,7 @@ void decrypt( FILE *outputfile, char *str, size_t len )
 			}
 		}
 
-		if ( badc ) fprintf( stderr, "cmorse: unsupported Morse code - '%s' - c%ld\n\r", morsechar, i );
+		if ( badc ) fprintf( stderr, "cmorse: unsupported Morse code - '%s' - c%ld\n\r", morsechar, (long) i );
 
 		i = charend - 1;
 	}
