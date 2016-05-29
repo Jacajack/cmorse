@@ -1,3 +1,9 @@
+cmorse (1.1-2) xenial; urgency=medium
+
+  * Patch for v1.1 (fixed bug left after debugging)
+
+ -- Jacek Wieczorek <mrjjot@gmail.com>  Sun, 29 May 2016 13:50:00 +0200
+
 cmorse (1.1-1) xenial; urgency=medium
 
   * Add support for stdin
