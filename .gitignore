@@ -1,2 +1,4 @@
 *.gch
 bin
+*.o
+*.morse
