@@ -6,26 +6,53 @@
 //Display version number
 void version( int exitcode )
 {
-	fprintf( stderr, "cmorse %s\n\r", VERSION );
+	fprintf( stderr, "cmorse " VERSION "\n\r" );
 	exit( exitcode );
 }
 
 //Display help message
 void help( int exitcode )
 {
-	fprintf( stderr, "cmorse %s\n\r", VERSION );
+	fprintf( stderr, "cmorse " VERSION "\n\r" );
 	fprintf( stderr, "Usage: cmorse [OPTIONS]\n\r" );
 	fprintf( stderr, "\t -h - show this help message\n\r" );
-	fprintf( stderr, "\t -i <filename> - input file name\n\r" );
+	fprintf( stderr, "\t -i <filename> - input file name (if not specified reads stdin)\n\r" );
+	fprintf( stderr, "\t -o <filename> - output file name (if not specified writes to stdout)\n\r" );
 	fprintf( stderr, "\t -v - show version number\n\r" );
 	fprintf( stderr, "\t -d - decrypt (from Morse to text)\n\r" );
 	fprintf( stderr, "\t -u - output uppercase text when decrypting\n\r" );
 	fprintf( stderr, "\t -p - disable automatic prosign encryption\n\r" );
+	fprintf( stderr, "\nSee also: `man cmorse`\n\r" );
 	exit( exitcode );
 }
 
+//Return pointer to an allocated part of memory containing string read from f
+char *afgets( FILE *f )
+{
+    const size_t step = 1; //Amount of characters, that will be appended to string, each time we run out of space
+
+    size_t i = 0, len = 8; //Current character index and initial str length
+    char *str, c; //String pointer and single character
+
+    //Allocate space for first few characters
+    if ( ( str = (char *) malloc( len ) ) == NULL ) return NULL;
+    do //Repeat until c is 0, or realloc error occured
+    {
+        c = getc( f ); //Read single character
+        //If current character pointer reaches end of string, allocate more memory
+        if ( i >= len )
+            if ( ( str = (char *) realloc( str, ( len += step ) ) ) == NULL ) return NULL;
+        //Is character EOT, EOF? If so, set it to 0 to exit loop
+        if ( c == 4 || c == EOF )
+            c = 0;
+        str[i++] = c; //Write character to array, and increment i
+    }
+    while ( c != 0 );
+    return str;
+}
+
 //Text -> Morse conversion
-void encrypt( char *str, size_t len )
+void encrypt( FILE *outputfile, char *str, size_t len )
 {
 	unsigned char j, badc;
 	size_t i;
@@ -47,7 +74,7 @@ void encrypt( char *str, size_t len )
 				}
 
 				//If next character is space, do not add additional one
-				printf( "%s%s", morse[j][1], ( i + 1 < len ) ? ( ( str[i + 1] == ' ' ) ? "" : " " ) : "" );
+				fprintf( outputfile, "%s%s", morse[j][1], ( i + 1 < len ) ? ( ( str[i + 1] == ' ' ) ? "" : " " ) : "" );
 				badc = 0;
 			}
 		}
@@ -58,7 +85,7 @@ void encrypt( char *str, size_t len )
 }
 
 //Morse -> Text conversion
-void decrypt( char *str, size_t len )
+void decrypt( FILE *outputfile, char *str, size_t len )
 {
 	char *morsechar = (char *) malloc( 1 );
 	unsigned char badc, j, spaces = 0;
@@ -103,7 +130,7 @@ void decrypt( char *str, size_t len )
 					continue;
 				}
 
-				printf( "%c", ( flags & FLAG_UPPERCASE ) ? toupper( morse[j][0][0] ) : morse[j][0][0] );
+				fprintf( outputfile, "%c", ( flags & FLAG_UPPERCASE ) ? toupper( morse[j][0][0] ) : morse[j][0][0] );
 				badc = 0;
 			}
 		}
@@ -119,13 +146,9 @@ void decrypt( char *str, size_t len )
 int main( int argc, char **argv )
 {
 	unsigned char i;
-	char *inputstr = NULL, *inputfilename = NULL;
-	size_t inputfilelen, inputstrlen;
-	FILE *inputfile;
-
-	//If ran without arguments
-	if ( argc == 1 )
-		help( 1 );
+	char *inputstr = NULL, *inputfilename = NULL, *outputfilename = NULL;
+	FILE *inputfile = NULL, *outputfile = NULL;
+	size_t inputstrlen;
 
 	//Search argv for supported arguments
 	for ( i = 0; i < argc; i++ )
@@ -161,48 +184,53 @@ int main( int argc, char **argv )
 				exit( 1 );
 			}
 		}
+
+		//Specify output file
+		if ( !strcmp( argv[i], "-o" ) || !strcmp( argv[i], "--output" ) )
+		{
+			if ( i + 1 < argc )
+				outputfilename = argv[i + 1];
+			else
+			{
+				fprintf( stderr, "cmorse: missing output file name.\nTry -h option to get more information.\n\r" );
+				exit( 1 );
+			}
+		}
 	}
 
 	//Open input file
-
-	if ( inputfilename == NULL )
-	{
-		fprintf( stderr, "cmorse: missing input file name.\nTry -h option to get more information.\n\r" );
-		exit( 1 );
-	}
-
-	if ( ( inputfile = fopen( inputfilename, "r" ) ) == NULL )
+	if ( inputfilename == NULL ) inputfile = stdin;
+	else if ( ( inputfile = fopen( inputfilename, "r" ) ) == NULL  )
 	{
 		fprintf( stderr, "cmorse: unable to open input file.\nTry -h option to get more information.\n\r" );
 		exit( 1 );
 	}
 
-	//Loading whole file to memory, instead of streaming may be a not good idea, but this solution, makes managing ' ' easier
+	printf( "%d\n", inputfilename );
+	if ( inputfile == stdin ) printf( "stdin\n" );
+	inputstr = afgets( inputfile );
+	inputstrlen = strlen( inputstr );
 
-	//Get file length
-	fseek( inputfile, 0, SEEK_END );
-	inputfilelen = ftell( inputfile );
-	rewind( inputfile );
+	//Close input file
+	if ( inputfile != stdin ) fclose( inputfile );
+	else if ( outputfilename == NULL ) printf( "\n" );
 
-	//Allocate memory
-	if ( ( inputstr = (char *) malloc( inputfilelen + 1 ) ) == NULL )
+	//Open outputfile
+	if ( outputfilename == NULL ) outputfile = stdout;
+	else if ( ( outputfile = fopen( outputfilename, "w" ) ) == NULL )
 	{
-		fprintf( stderr, "cmorse: memory allocation error.\n\r" );
+		fprintf( stderr, "cmorse: unable to open output file.\nTry -h option to get more information.\n\r" );
 		exit( 1 );
 	}
 
-	//Read input file
-	while ( ( inputstr[ftell( inputfile )] = getc( inputfile ) ) != EOF );
-	inputstr[inputfilelen] = 0;
-	inputstrlen = strlen( inputstr );
-
-	fclose( inputfile );
-
 	//Encrypt or decrypt file
 	if ( flags & FLAG_DECRYPT )
-		decrypt( inputstr, inputstrlen );
+		decrypt( outputfile, inputstr, inputstrlen );
 	else
-		encrypt( inputstr, inputstrlen );
+		encrypt( outputfile, inputstr, inputstrlen );
+
+	//Close input file
+	if ( outputfile != stdout ) fclose( outputfile );
 
 	free( inputstr );
 	printf( "\n\r" );
