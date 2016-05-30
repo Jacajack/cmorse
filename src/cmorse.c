@@ -15,13 +15,14 @@ void help( int exitcode )
 {
 	fprintf( stderr, "cmorse " VERSION "\n\r" );
 	fprintf( stderr, "Usage: cmorse [OPTIONS]\n\r" );
-	fprintf( stderr, "\t -h - show this help message\n\r" );
-	fprintf( stderr, "\t -i <filename> - input file name (if not specified reads stdin)\n\r" );
-	fprintf( stderr, "\t -o <filename> - output file name (if not specified writes to stdout)\n\r" );
-	fprintf( stderr, "\t -v - show version number\n\r" );
+	fprintf( stderr, "\t -a - append data to file instead of overwriting it\n\r" );
 	fprintf( stderr, "\t -d - decrypt (from Morse to text)\n\r" );
-	fprintf( stderr, "\t -u - output uppercase text when decrypting\n\r" );
+	fprintf( stderr, "\t -h - show this help message\n\r" );
+	fprintf( stderr, "\t -i <filename> - input file name (if not specified reads from stdin)\n\r" );
+	fprintf( stderr, "\t -o <filename> - output file name (if not specified writes to stdout)\n\r" );
 	fprintf( stderr, "\t -p - disable automatic prosign encryption\n\r" );
+	fprintf( stderr, "\t -u - output uppercase text when decrypting\n\r" );
+	fprintf( stderr, "\t -v - show version number\n\r" );
 	fprintf( stderr, "\nSee also: `man cmorse`\n\r" );
 	exit( exitcode );
 }
@@ -146,42 +147,66 @@ void decrypt( FILE *outputfile, char *str, size_t len )
 int main( int argc, char **argv )
 {
 	unsigned char i;
-	char *inputstr = NULL, *inputfilename = NULL, *outputfilename = NULL;
+	char *inputstr = NULL, *inputfilename = NULL, *outputfilename = NULL, argparsed = 0;
 	FILE *inputfile = NULL, *outputfile = NULL;
 	size_t inputstrlen;
 
 	//Search argv for supported arguments
-	for ( i = 0; i < argc; i++ )
+	for ( i = 1; i < argc; i++ )
 	{
+		//Argument is assument to be not parsed as default
+		argparsed = 0;
+
 		//Show help message
 		if ( !strcmp( argv[i], "-h" ) || !strcmp( argv[i], "--help" ) )
+		{
+			argparsed = 1;
 			help( 0 );
+		}
 
 		//Show version number
 		if ( !strcmp( argv[i], "-v" ) || !strcmp( argv[i], "--version" ) )
+		{
+			argparsed = 1;
 			version( 0 );
+		}
 
 		//Decrpyt morse message
 		if ( !strcmp( argv[i], "-d" ) || !strcmp( argv[i], "--decrypt" ) )
+		{
+			argparsed = 1;
 			flags |= FLAG_DECRYPT;
+		}
 
 		//Output uppercase letters
 		if ( !strcmp( argv[i], "-u" ) || !strcmp( argv[i], "--uppercase" ) )
+		{
+			argparsed = 1;
 			flags |= FLAG_UPPERCASE;
+		}
 
 		//Output uppercase letters
 		if ( !strcmp( argv[i], "-p" ) || !strcmp( argv[i], "--prosignsdisabled" ) )
+		{
+			argparsed = 1;
 			flags |= FLAG_NOPROSIGNS;
+		}
 
 		//Append data
 		if ( !strcmp( argv[i], "-a" ) || !strcmp( argv[i], "--append" ) )
+		{
+			argparsed = 1;
 			flags |= FLAG_APPEND;
+		}
 
 		//Specify input file
 		if ( !strcmp( argv[i], "-i" ) || !strcmp( argv[i], "--input" ) )
 		{
+			argparsed = 1;
 			if ( i + 1 < argc )
-				inputfilename = argv[i + 1];
+			{
+				inputfilename = argv[i++ + 1];
+			}
 			else
 			{
 				fprintf( stderr, "cmorse: missing input file name.\nTry -h option to get more information.\n\r" );
@@ -192,13 +217,21 @@ int main( int argc, char **argv )
 		//Specify output file
 		if ( !strcmp( argv[i], "-o" ) || !strcmp( argv[i], "--output" ) )
 		{
+			argparsed = 1;
 			if ( i + 1 < argc )
-				outputfilename = argv[i + 1];
+				outputfilename = argv[i++ + 1];
 			else
 			{
 				fprintf( stderr, "cmorse: missing output file name.\nTry -h option to get more information.\n\r" );
 				exit( 1 );
 			}
+		}
+
+		//Throw error if argument is unexpected
+		if ( !argparsed )
+		{
+			fprintf( stderr, "cmorse: unknown option: %s\n\r", argv[i] );
+			help( 1 );
 		}
 	}
 
