@@ -3,4 +3,3 @@ bin
 *.o
 *.morse
 tests/*.morse
-tests/*.txt
