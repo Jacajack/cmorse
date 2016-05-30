@@ -173,6 +173,10 @@ int main( int argc, char **argv )
 		if ( !strcmp( argv[i], "-p" ) || !strcmp( argv[i], "--prosignsdisabled" ) )
 			flags |= FLAG_NOPROSIGNS;
 
+		//Append data
+		if ( !strcmp( argv[i], "-a" ) || !strcmp( argv[i], "--append" ) )
+			flags |= FLAG_APPEND;
+
 		//Specify input file
 		if ( !strcmp( argv[i], "-i" ) || !strcmp( argv[i], "--input" ) )
 		{
@@ -216,7 +220,7 @@ int main( int argc, char **argv )
 
 	//Open outputfile
 	if ( outputfilename == NULL ) outputfile = stdout;
-	else if ( ( outputfile = fopen( outputfilename, "w" ) ) == NULL )
+	else if ( ( outputfile = fopen( outputfilename, ( flags & FLAG_APPEND ) ? "a" : "w" ) ) == NULL )
 	{
 		fprintf( stderr, "cmorse: unable to open output file.\nTry -h option to get more information.\n\r" );
 		exit( 1 );

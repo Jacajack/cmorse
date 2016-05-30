@@ -19,6 +19,7 @@
 #define FLAG_DECRYPT ( 1 << 0 )
 #define FLAG_UPPERCASE ( 1 << 1 )
 #define FLAG_NOPROSIGNS ( 1 << 2 )
+#define FLAG_APPEND ( 1 << 3 )
 
 unsigned char flags = 0;
 
