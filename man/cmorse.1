@@ -1,33 +1,45 @@
-.TH cmorse 1 "29 May 2016" "v1.1"
+.TH cmorse 1 "30 May 2016" "v1.1-3"
 .SH NAME
 cmorse - text to Morse code converter (and vice versa)
 
 .SH SYNOPSIS
 cmorse
-.B [-h] [-i
+.B [-a] [-d] [-h] [-i
 .I filename
 .B ]
 .B [-o
 .I filename
-.B ] [-v] [-d] [-u] [-p]
+.B ] [-p] [-u] [-v]
 
 .SH DESCRIPTION
 Coverts Morse code to text, or vice versa.
 Currently, only ASCII characters are supported.
 If input file is not specified, cmorse will read stdin, until EOF, or EOT character occurs.
 Similarly, if output file is not specified, cmorse will write output to stdout.
-Normally, decoded letters are outputted lowercase.
-Also, cmorse does not guarantee that line spacing will be 100% the same after encoding and decoding.
+If
+.B -a
+option is not set, cmorse is going to
+.B overwrite output file content!
 
 .PP
 .SS Morse code format
 Morse code is written as lines, dots and spaces. There is
 .B one
-space between each two letter codes. Words are separated by
+space between each two letter in a word, and words are separated by
 .B two
-spaces.
+spaces. Normally, all characters are outputted lowercase (unless
+.B -p
+option is used).
+Also, cmorse does not guarantee that line spacing will be exactly the same after encoding and decoding.
+
 
 .SH OPTIONS
+.B -a, --append
+- append data to file instead of overwriting it
+
+.B -d, --decode
+- decode from Morse code to text file (assumes input file is in Morse code format)
+
 .B -h, --help
 - display a help message
 
@@ -40,28 +52,28 @@ and cmorse will throw errors.
 .I filename
 - specifies output file name
 
-.B -v, --version
-- display a version information
-
-.B -d, --decode
-- decode from Morse code to text file (assumes input file is in Morse code format)
-
-.B -u, --uppercase
-- output uppercase letters when decoding
-
 .B -p, --noprosigns
 - do not change special characters (new line, etc.) to Morse prosigns
 (other Morse code applications may not handle them way cmorse does)
 
+.B -u, --uppercase
+- output uppercase letters when decoding
+
+.B -v, --version
+- display a version information
+
 .SH EXAMPLES
- cmorse -i testfile.txt > output.morse
- cmorse -d -i output.morse > output.txt
+.I Recommended way of writing to files:
  cmorse -i testfile2.txt -o output2.morse
  cmorse -d -i output2.morse -o output2.txt
 
+.I The second way:
+ cmorse -i testfile.txt > output.morse
+ cmorse -d -i output.morse > output.txt
+
 .SH BUGS
 There are no known bugs, if you find some, please report them here:
-.I https://github.com/Jacajack/cmorse/issues
+https://github.com/Jacajack/cmorse/issues
 
 .SH AUTHOR
 Jacek Wieczorek <mrjjot@gmail.com>
