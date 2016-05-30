@@ -1,3 +1,11 @@
+cmorse (1.1-3) xenial; urgency=medium
+
+  * Add --append flag
+  * Improve command line arguments management
+  * Minor tweaks
+
+ -- Jacek Wieczorek <mrjjot@gmail.com>  Mon, 30 May 2016 15:17:00 +0200
+
 cmorse (1.1-2) xenial; urgency=medium
 
   * Patch for v1.1 (fixed bug left after debugging)
