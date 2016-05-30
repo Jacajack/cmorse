@@ -19,13 +19,14 @@
 `cmorse [OPTIONS]`
 
 Supported command line options:
+ - `-a` / `--append` - Append to file instead of overwriting
+ - `-d` / `--decrypt` - Convert from Morse code to regular text
  - `-h` / `--help` - Display help message
- - `-v` / `--version` - Display software version number
  - `-i` / `--input` - Specify input file in next argument
  - `-o` / `--output` - Specify input file in next argument
- - `-d` / `--decrypt` - Convert from Morse code to regular text
- - `-u` / `--uppercase` - Output uppercase text, when decrypting
  - `-p` / `--prosginsdisabled` - Disable automatic prosign insertion (like `.-.-` instead of new line)
+ - `-u` / `--uppercase` - Output uppercase text, when decrypting
+ - `-v` / `--version` - Display software version number
 
 For example, `cmorse -i example.txt -o example.morse` will encode `example.txt` and store Morse code in `example.morse`.
 To reverse process use `cmorse -d -i example.morse -o decrypted.txt`.
