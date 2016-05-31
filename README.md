@@ -6,8 +6,8 @@
 
 [Cmorse on launchpad...](https://launchpad.net/cmorse)
 
-![Screenshot](http://i.imgur.com/Xy3KEZW.gif)
-<br>*Screenshot of v1.0* &nbsp;&nbsp;&nbsp;&nbsp;<sup><sub>*That chameleon, tho...*</sub></sup>
+![Screenshot](http://i.imgur.com/2L7THtq.gif)
+<br>*Screenshot of v1.0* &nbsp;&nbsp;&nbsp;&nbsp;
 
 ## Installing cmorse
  - Add PPA to your system - `sudo add-apt-repository ppa:mrjjot/cmorse`
