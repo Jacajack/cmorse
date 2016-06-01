@@ -7,8 +7,4 @@ install:
 script:
   - make all
 after_success:
-  - ./bin/cmorse -i test.txt > mesg.morse
-  - ./bin/cmorse -d -i mesg.morse > mesg2.txt
-  - pastebinit -i test.txt
-  - pastebinit -i mesg.morse
-  - pastebinit -i mesg2.txt
+  - cd tests && ./test.sh
