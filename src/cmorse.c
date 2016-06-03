@@ -16,6 +16,7 @@ void help( int exitcode )
 	fprintf( stderr, "cmorse " VERSION "\n\r" );
 	fprintf( stderr, "Usage: cmorse [OPTIONS]\n\r" );
 	fprintf( stderr, "\t -a - append data to file instead of overwriting it\n\r" );
+	fprintf( stderr, "\t -c - select morse code character set\n\r" );
 	fprintf( stderr, "\t -d - decrypt (from Morse to text)\n\r" );
 	fprintf( stderr, "\t -h - show this help message\n\r" );
 	fprintf( stderr, "\t -i <filename> - input file name (if not specified reads from stdin)\n\r" );
@@ -66,7 +67,7 @@ void encrypt( FILE *outputfile, wchar_t *str, size_t len )
 		DEBUG( "%d", str[i] );
 
 		//Iterate through pseudo-hash, looking for matches
-		for ( j = 0; j < SUPPORTED_CHARACTERS && badc; j++ )
+		for ( j = 0; j < CHARSET_LENGTH && badc; j++ )
 		{
 			if ( (wchar_t) towlower( str[i] ) == morse[j][0][0] )
 			{
@@ -126,7 +127,7 @@ void decrypt( FILE *outputfile, wchar_t *str, size_t len )
 		morsechar = (wchar_t *) realloc( morsechar, ( charend - i + 1 ) * sizeof( wchar_t ) );
 		memcpy( morsechar, str + i, ( charend - i ) * sizeof( wchar_t ) );
 		morsechar[charend - i] = 0;
-		for ( j = 0; j < SUPPORTED_CHARACTERS; j++ )
+		for ( j = 0; j < CHARSET_LENGTH; j++ )
 		{
 			if ( !wcscmp( morsechar, morse[j][1] ) )
 			{
@@ -153,7 +154,7 @@ int main( int argc, char **argv )
 {
 	unsigned char i;
 	wchar_t *inputstr = NULL;
-	char *inputfilename = NULL, *outputfilename = NULL, argparsed = 0;
+	char *inputfilename = NULL, *outputfilename = NULL, *charset = NULL, argparsed = 0;
 	FILE *inputfile = NULL, *outputfile = NULL;
 	size_t inputstrlen;
 
@@ -205,6 +206,21 @@ int main( int argc, char **argv )
 			flags |= FLAG_APPEND;
 		}
 
+		//Specify charset
+		if ( !strcmp( argv[i], "-c" ) || !strcmp( argv[i], "--charset" ) )
+		{
+			argparsed = 1;
+			if ( i + 1 < argc )
+			{
+				charset = argv[i++ + 1];
+			}
+			else
+			{
+				fprintf( stderr, "cmorse: missing character set name.\nTry -h option to get more information.\n\r" );
+				exit( 1 );
+			}
+		}
+
 		//Specify input file
 		if ( !strcmp( argv[i], "-i" ) || !strcmp( argv[i], "--input" ) )
 		{
@@ -243,6 +259,17 @@ int main( int argc, char **argv )
 
 	//Set locale
 	setlocale( LC_ALL, "" );
+
+	//Select character set
+	if ( charset == NULL || !strcmp( charset, "default" ) ) //Default character set
+	{
+		morse = morse_default;
+	}
+	else //Unknown character set
+	{
+		fprintf( stderr, "cmorse: unknown character set.\nTry -h option to get more information.\n\r" );
+		exit( 1 );
+	}
 
 	//Open input file
 	if ( inputfilename == NULL ) inputfile = stdin;
