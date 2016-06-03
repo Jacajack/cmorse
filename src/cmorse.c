@@ -205,7 +205,7 @@ int main( int argc, char **argv )
 			argparsed = 1;
 			if ( i + 1 < argc )
 			{
-				inputfilename = argv[i++ + 1];
+				inputfilename = argv[++i];
 			}
 			else
 			{
@@ -219,7 +219,7 @@ int main( int argc, char **argv )
 		{
 			argparsed = 1;
 			if ( i + 1 < argc )
-				outputfilename = argv[i++ + 1];
+				outputfilename = argv[++i];
 			else
 			{
 				fprintf( stderr, "cmorse: missing output file name.\nTry -h option to get more information.\n\r" );
