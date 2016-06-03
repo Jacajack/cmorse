@@ -69,7 +69,7 @@ void encrypt( FILE *outputfile, wchar_t *str, size_t len )
 		//Iterate through pseudo-hash, looking for matches
 		for ( j = 0; j < CHARSET_LENGTH && badc; j++ )
 		{
-			if ( (wchar_t) towlower( str[i] ) == morse[j][0][0] )
+			if ( (wchar_t) towlower( str[i] ) == charset[j][0][0] )
 			{
 				//DEBUG( "%c", (wint_t) str[i] );
 				//DEBUG( "%S", morse[j][1] );
@@ -81,7 +81,7 @@ void encrypt( FILE *outputfile, wchar_t *str, size_t len )
 				}
 
 				//If next character is space, do not add additional one
-				fprintf( outputfile, "%S%S", morse[j][1], ( i + 1 < len ) ? ( ( str[i + 1] == L' ' ) ? L"" : L" " ) : L"" );
+				fprintf( outputfile, "%S%S", charset[j][1], ( i + 1 < len ) ? ( ( str[i + 1] == L' ' ) ? L"" : L" " ) : L"" );
 				badc = 0;
 			}
 		}
@@ -129,15 +129,15 @@ void decrypt( FILE *outputfile, wchar_t *str, size_t len )
 		morsechar[charend - i] = 0;
 		for ( j = 0; j < CHARSET_LENGTH; j++ )
 		{
-			if ( !wcscmp( morsechar, morse[j][1] ) )
+			if ( !wcscmp( morsechar, charset[j][1] ) )
 			{
-				if ( ( morse[j][0][0] == L'\n' || morse[j][0][0] == L'\r' ) && flags & FLAG_NOPROSIGNS )
+				if ( ( charset[j][0][0] == L'\n' || charset[j][0][0] == L'\r' ) && flags & FLAG_NOPROSIGNS )
 				{
 					badc = 0;
 					continue;
 				}
 
-				fprintf( outputfile, "%C", ( flags & FLAG_UPPERCASE ) ? towupper( morse[j][0][0] ) : (wint_t) morse[j][0][0] );
+				fprintf( outputfile, "%C", ( flags & FLAG_UPPERCASE ) ? towupper( charset[j][0][0] ) : (wint_t) charset[j][0][0] );
 				badc = 0;
 			}
 		}
@@ -154,7 +154,7 @@ int main( int argc, char **argv )
 {
 	unsigned char i;
 	wchar_t *inputstr = NULL;
-	char *inputfilename = NULL, *outputfilename = NULL, *charset = NULL, argparsed = 0;
+	char *inputfilename = NULL, *outputfilename = NULL, *charsetname = NULL, argparsed = 0;
 	FILE *inputfile = NULL, *outputfile = NULL;
 	size_t inputstrlen;
 
@@ -212,7 +212,7 @@ int main( int argc, char **argv )
 			argparsed = 1;
 			if ( i + 1 < argc )
 			{
-				charset = argv[i++ + 1];
+				charsetname = argv[i++ + 1];
 			}
 			else
 			{
@@ -261,9 +261,9 @@ int main( int argc, char **argv )
 	setlocale( LC_ALL, "" );
 
 	//Select character set
-	if ( charset == NULL || !strcmp( charset, "default" ) ) //Default character set
+	if ( charsetname == NULL || !strcmp( charsetname, "default" ) ) //Default character set
 	{
-		morse = morse_default;
+		charset = charset_default;
 	}
 	else //Unknown character set
 	{

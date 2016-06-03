@@ -29,4 +29,4 @@ unsigned char flags = 0;
 #include "./charsets/default.h"
 
 //Current character set
-wchar_t ( *morse )[2][MORSE_CODE_LENGTH] ;
+wchar_t ( *charset )[2][MORSE_CODE_LENGTH];

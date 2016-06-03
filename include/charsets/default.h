@@ -6,7 +6,7 @@
 #define MORSE_CODE_LENGTH 8
 #endif
 
-wchar_t morse_default[CHARSET_LENGTH][2][MORSE_CODE_LENGTH] =
+wchar_t charset_default[CHARSET_LENGTH][2][MORSE_CODE_LENGTH] =
 {
 	{L"a", L".-"},
 	{L"b", L"-..."},
