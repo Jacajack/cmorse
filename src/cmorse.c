@@ -28,23 +28,24 @@ void help( int exitcode )
 }
 
 //Return pointer to an allocated part of memory containing string read from f
-char *afgets( FILE *f )
+wchar_t *afwgets( FILE *f )
 {
     const size_t step = 1; //Amount of characters, that will be appended to string, each time we run out of space
 
     size_t i = 0, len = 8; //Current character index and initial str length
-    char *str, c; //String pointer and single character
+    wchar_t *str, c; //String pointer and single character
 
     //Allocate space for first few characters
-    if ( ( str = (char *) malloc( len ) ) == NULL ) return NULL;
+    if ( ( str = (wchar_t *) malloc( len * sizeof( wchar_t ) ) ) == NULL ) return NULL;
     do //Repeat until c is 0, or realloc error occured
     {
-        c = getc( f ); //Read single character
+        c = getwc( f ); //Read single character
+		DEBUG( "%d", c );
         //If current character pointer reaches end of string, allocate more memory
         if ( i >= len )
-            if ( ( str = (char *) realloc( str, ( len += step ) ) ) == NULL ) return NULL;
+            if ( ( str = (wchar_t *) realloc( str, ( len += step ) * sizeof( wchar_t ) ) ) == NULL ) return NULL;
         //Is character EOT, EOF? If so, set it to 0 to exit loop
-        if ( c == 4 || c == EOF )
+        if ( c == 4 || c == (wchar_t) WEOF )
             c = 0;
         str[i++] = c; //Write character to array, and increment i
     }
@@ -53,7 +54,7 @@ char *afgets( FILE *f )
 }
 
 //Text -> Morse conversion
-void encrypt( FILE *outputfile, char *str, size_t len )
+void encrypt( FILE *outputfile, wchar_t *str, size_t len )
 {
 	unsigned char j, badc;
 	size_t i;
@@ -62,33 +63,37 @@ void encrypt( FILE *outputfile, char *str, size_t len )
 	for ( i = 0; i < len; i++ )
 	{
 		badc = 1;
+		DEBUG( "%d", str[i] );
 
 		//Iterate through pseudo-hash, looking for matches
 		for ( j = 0; j < SUPPORTED_CHARACTERS && badc; j++ )
 		{
-			if ( tolower( str[i] ) == morse[j][0][0] )
+			if ( (wchar_t) towlower( str[i] ) == morse[j][0][0] )
 			{
-				if ( ( str[i] == '\n' || str[i] == '\r' ) && flags & FLAG_NOPROSIGNS )
+				//DEBUG( "%c", (wint_t) str[i] );
+				//DEBUG( "%S", morse[j][1] );
+
+				if ( ( str[i] == L'\n' || str[i] == L'\r' ) && flags & FLAG_NOPROSIGNS )
 				{
 					badc = 0;
 					continue;
 				}
 
 				//If next character is space, do not add additional one
-				fprintf( outputfile, "%s%s", morse[j][1], ( i + 1 < len ) ? ( ( str[i + 1] == ' ' ) ? "" : " " ) : "" );
+				fprintf( outputfile, "%S%S", morse[j][1], ( i + 1 < len ) ? ( ( str[i + 1] == L' ' ) ? L"" : L" " ) : L"" );
 				badc = 0;
 			}
 		}
 
 		//If no matches were found, throw a warning
-		if ( badc ) fprintf( stderr, "cmorse: unsupported character (ASCII only) - %c (0x%x) - c%ld\n\r", str[i], str[i], (long) i );
+		if ( badc ) fprintf( stderr, "cmorse: unsupported character - %C (0x%x) - c%ld\n\r", (wint_t) str[i], (unsigned int) str[i], (long) i );
 	}
 }
 
 //Morse -> Text conversion
-void decrypt( FILE *outputfile, char *str, size_t len )
+void decrypt( FILE *outputfile, wchar_t *str, size_t len )
 {
-	char *morsechar = (char *) malloc( 1 );
+	wchar_t *morsechar = (wchar_t *) malloc( sizeof( wchar_t ) );
 	unsigned char badc, j, spaces = 0;
 	size_t i, charend = 0;
 
@@ -97,11 +102,11 @@ void decrypt( FILE *outputfile, char *str, size_t len )
 		badc = 1;
 
 		//Ignore newlines etc.
-		if ( str[i] == '\n' || str[i] == '\r' || str[i] == '\t' )
+		if ( str[i] == L'\n' || str[i] == L'\r' || str[i] == L'\t' )
 			continue;
 
 		//Is space?
-		if ( str[i] == ' ' )
+		if ( str[i] == L' ' )
 		{
 			spaces++;
 			continue;
@@ -114,29 +119,29 @@ void decrypt( FILE *outputfile, char *str, size_t len )
 
 		//Look for next meaningful character
 		charend = i;
-		while ( str[charend] != ' ' && str[charend] != '\0' && str[charend] != '\n' && str[charend] != '\r' && str[charend] != '\t' && charend < len )
+		while ( str[charend] != L' ' && str[charend] != L'\0' && str[charend] != L'\n' && str[charend] != L'\r' && str[charend] != L'\t' && charend < len )
 			charend++;
 
 		//Copy morse code to temporary array
-		morsechar = (char *) realloc( morsechar, charend - i + 1 );
-		memcpy( morsechar, str + i, charend - i );
+		morsechar = (wchar_t *) realloc( morsechar, ( charend - i + 1 ) * sizeof( wchar_t ) );
+		memcpy( morsechar, str + i, ( charend - i ) * sizeof( wchar_t ) );
 		morsechar[charend - i] = 0;
 		for ( j = 0; j < SUPPORTED_CHARACTERS; j++ )
 		{
-			if ( !strcmp( morsechar, morse[j][1] ) )
+			if ( !wcscmp( morsechar, morse[j][1] ) )
 			{
-				if ( ( morse[j][0][0] == '\n' || morse[j][0][0] == '\r' ) && flags & FLAG_NOPROSIGNS )
+				if ( ( morse[j][0][0] == L'\n' || morse[j][0][0] == L'\r' ) && flags & FLAG_NOPROSIGNS )
 				{
 					badc = 0;
 					continue;
 				}
 
-				fprintf( outputfile, "%c", ( flags & FLAG_UPPERCASE ) ? toupper( morse[j][0][0] ) : morse[j][0][0] );
+				fprintf( outputfile, "%C", ( flags & FLAG_UPPERCASE ) ? towupper( morse[j][0][0] ) : (wint_t) morse[j][0][0] );
 				badc = 0;
 			}
 		}
 
-		if ( badc ) fprintf( stderr, "cmorse: unsupported Morse code - '%s' - c%ld\n\r", morsechar, (long) i );
+		if ( badc ) fprintf( stderr, "cmorse: unsupported Morse code - '%S' - c%ld\n\r", morsechar, (long) i );
 
 		i = charend - 1;
 	}
@@ -147,7 +152,8 @@ void decrypt( FILE *outputfile, char *str, size_t len )
 int main( int argc, char **argv )
 {
 	unsigned char i;
-	char *inputstr = NULL, *inputfilename = NULL, *outputfilename = NULL, argparsed = 0;
+	wchar_t *inputstr = NULL;
+	char *inputfilename = NULL, *outputfilename = NULL, argparsed = 0;
 	FILE *inputfile = NULL, *outputfile = NULL;
 	size_t inputstrlen;
 
@@ -235,17 +241,21 @@ int main( int argc, char **argv )
 		}
 	}
 
+	//Set locale
+	setlocale( LC_ALL, "" );
+
 	//Open input file
 	if ( inputfilename == NULL ) inputfile = stdin;
-	else if ( ( inputfile = fopen( inputfilename, "r" ) ) == NULL  )
+	else if ( ( inputfile = fopen( inputfilename, "rb" ) ) == NULL  )
 	{
 		fprintf( stderr, "cmorse: unable to open input file.\nTry -h option to get more information.\n\r" );
 		exit( 1 );
 	}
 
-	DEBUG( "%d", inputfilename );
-	inputstr = afgets( inputfile );
-	inputstrlen = strlen( inputstr );
+	DEBUG( "%s", inputfilename );
+	inputstr = afwgets( inputfile );
+	inputstrlen = wcslen( inputstr );
+	DEBUG( "%d", inputstrlen );
 
 	//Close input file
 	if ( inputfile != stdin ) fclose( inputfile );
