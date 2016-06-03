@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <error.h>
 #include <stdlib.h>
-#include <ctype.h>
 #include <wchar.h>
 #include <wctype.h>
 #include <string.h>
