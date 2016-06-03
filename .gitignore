@@ -2,4 +2,6 @@
 bin
 *.o
 *.morse
-tests/*.morse
+tests/*
+!tests/test.sh
+!tests/test.txt
