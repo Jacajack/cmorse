@@ -1,5 +1,0 @@
-*.gch
-bin
-*.o
-*.morse
-tests/*.morse
