@@ -261,7 +261,7 @@ int main( int argc, char **argv )
 	setlocale( LC_ALL, "" );
 
 	//Select character set
-	if ( charsetname == NULL || !strcmp( charsetname, "default" ) ) //Default character set
+	if ( charsetname == NULL || !strcmp( charsetname, "default" ) || !strcmp( charsetname, "en" ) ) //Default character set
 	{
 		charset = charset_default;
 	}
