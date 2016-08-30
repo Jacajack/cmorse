@@ -33,7 +33,8 @@ char *afgets( FILE *f )
     const size_t step = 1; //Amount of characters, that will be appended to string, each time we run out of space
 
     size_t i = 0, len = 8; //Current character index and initial str length
-    char *str, c; //String pointer and single character
+    char *str; //String
+	int c; //Current character (int is better than char, ya know...)
 
     //Allocate space for first few characters
     if ( ( str = (char *) malloc( len ) ) == NULL ) return NULL;
@@ -43,7 +44,7 @@ char *afgets( FILE *f )
         //If current character pointer reaches end of string, allocate more memory
         if ( i >= len )
             if ( ( str = (char *) realloc( str, ( len += step ) ) ) == NULL ) return NULL;
-        //Is character EOT, EOF? If so, set it to 0 to exit loop
+        //Is character EOT or EOF? If so, set it to 0 to exit loop
         if ( c == 4 || c == EOF )
             c = 0;
         str[i++] = c; //Write character to array, and increment i
