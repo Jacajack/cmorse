@@ -1,7 +1,7 @@
 /* This is simple text-Morse's alphabet converter writen in C */
 /* By Jacajack (Jacek Wieczorek) <mrjjot@gmail.com> 2016 */
 
-#include "../include/cmorse.h"
+#include "cmorse.h"
 
 //Display version number
 void version( int exitcode )
