@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall
 
-all: clean FORCE src/cmorse.c include/cmorse.h include/debug.h
+all: clean FORCE src/cmorse.c src/cmorse.h src/debug.h
 	$(CC) $(CFLAGS) -o bin/cmorse src/cmorse.c
 
 install:
