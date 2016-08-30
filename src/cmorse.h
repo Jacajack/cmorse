@@ -13,7 +13,7 @@
 #include "debug.h"
 
 
-#define VERSION "v1.1"
+#define VERSION "v1.1b"
 #define SUPPORTED_CHARACTERS 57
 
 #define FLAG_DECRYPT ( 1 << 0 )
