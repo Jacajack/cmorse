@@ -23,14 +23,25 @@
 //Display version number
 void version( int exitcode )
 {
-	fprintf( stderr, "cmorse " VERSION "\n\r" );
+	fprintf( stderr, "cmorse " VERSION "\n\n\r" );
+	fprintf( stderr,
+		"This program is distributed in the hope that it will be useful,\n\r"
+    	"but WITHOUT ANY WARRANTY; without even the implied warranty of\n\r"
+    	"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\r"
+    	"GNU General Public License for more details.\n\r" );
 	exit( exitcode );
 }
 
 //Display help message
 void help( int exitcode )
 {
-	fprintf( stderr, "cmorse " VERSION "\n\r" );
+	fprintf( stderr, "cmorse " VERSION "\n\n\r" );
+	fprintf( stderr,
+		"This program is distributed in the hope that it will be useful,\n\r"
+    	"but WITHOUT ANY WARRANTY; without even the implied warranty of\n\r"
+    	"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\r"
+    	"GNU General Public License for more details.\n\n\r" );
+
 	fprintf( stderr, "Usage: cmorse [OPTIONS]\n\r" );
 	fprintf( stderr, "\t -a - append data to file instead of overwriting it\n\r" );
 	fprintf( stderr, "\t -d - decrypt (from Morse to text)\n\r" );
