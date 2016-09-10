@@ -1,8 +1,8 @@
 /*
-	cmorse - simple text to Morse code converter
+    cmorse - simple text to Morse code converter
     Copyright (C) 2016  Jacek Wieczorek <mrjjot@gmail.com>
 
-	This file is part of cmorse.
+    This file is part of cmorse.
 
     Cmorse is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
