@@ -40,11 +40,6 @@ Same applies to output files - when not specified, `cmorse` will write to `stdou
  - To install use `sudo make install`, and to uninstall - `sudo make uninstall`.
 
 ## Developing cmorse with Docker
- - Clone git repository - `git clone https://github.com/Jacajack/cmorse.    git && cd cmorse`
+ - Clone git repository - `git clone https://github.com/Jacajack/cmorse.git && cd cmorse`
  - Build docker image - `docker build -t cmorse .`
- - Run `cmorse` binary using docker container based on the cmorse image
-```
-docker run -it cmorse cmorse
-Hello, World!
-.... . .-.. .-.. --- --..--  .-- --- .-. .-.. -.. -.-.--
-```
+ - Run `cmorse` binary using docker container based on the cmorse image - `docker run -it cmorse cmorse`
