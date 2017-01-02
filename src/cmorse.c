@@ -1,21 +1,21 @@
 /*
-    cmorse - simple text to Morse code converter
-    Copyright (C) 2016  Jacek Wieczorek <mrjjot@gmail.com>
+	cmorse - simple text to Morse code converter
+	Copyright (C) 2016	Jacek Wieczorek <mrjjot@gmail.com>
 
-    This file is part of cmorse.
+	This file is part of cmorse.
 
-    Cmorse is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+	Cmorse is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-    Cmorse is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+	Cmorse is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "cmorse.h"
@@ -26,9 +26,9 @@ void version( int exitcode )
 	fprintf( stderr, "cmorse " VERSION "\n\n\r" );
 	fprintf( stderr,
 		"This program is distributed in the hope that it will be useful,\n\r"
-    	"but WITHOUT ANY WARRANTY; without even the implied warranty of\n\r"
-    	"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\r"
-    	"GNU General Public License for more details.\n\r" );
+		"but WITHOUT ANY WARRANTY; without even the implied warranty of\n\r"
+		"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\r"
+		"GNU General Public License for more details.\n\r" );
 	exit( exitcode );
 }
 
@@ -38,9 +38,9 @@ void help( int exitcode )
 	fprintf( stderr, "cmorse " VERSION "\n\n\r" );
 	fprintf( stderr,
 		"This program is distributed in the hope that it will be useful,\n\r"
-    	"but WITHOUT ANY WARRANTY; without even the implied warranty of\n\r"
-    	"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\r"
-    	"GNU General Public License for more details.\n\n\r" );
+		"but WITHOUT ANY WARRANTY; without even the implied warranty of\n\r"
+		"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\r"
+		"GNU General Public License for more details.\n\n\r" );
 
 	fprintf( stderr, "Usage: cmorse [OPTIONS]\n\r" );
 	fprintf( stderr, "\t -a - append data to file instead of overwriting it\n\r" );
@@ -58,27 +58,27 @@ void help( int exitcode )
 //Return pointer to an allocated part of memory containing string read from f
 char *afgets( FILE *f )
 {
-    const size_t step = 1; //Amount of characters, that will be appended to string, each time we run out of space
+	const size_t step = 1; //Amount of characters, that will be appended to string, each time we run out of space
 
-    size_t i = 0, len = 8; //Current character index and initial str length
-    char *str; //String
+	size_t i = 0, len = 8; //Current character index and initial str length
+	char *str; //String
 	int c; //Current character (int is better than char, ya know...)
 
-    //Allocate space for first few characters
-    if ( ( str = (char *) malloc( len ) ) == NULL ) return NULL;
-    do //Repeat until c is 0, or realloc error occured
-    {
-        c = getc( f ); //Read single character
-        //If current character pointer reaches end of string, allocate more memory
-        if ( i >= len )
-            if ( ( str = (char *) realloc( str, ( len += step ) ) ) == NULL ) return NULL;
-        //Is character EOT or EOF? If so, set it to 0 to exit loop
-        if ( c == 4 || c == EOF )
-            c = 0;
-        str[i++] = c; //Write character to array, and increment i
-    }
-    while ( c != 0 );
-    return str;
+	//Allocate space for first few characters
+	if ( ( str = (char *) malloc( len ) ) == NULL ) return NULL;
+	do //Repeat until c is 0, or realloc error occured
+	{
+		c = getc( f ); //Read single character
+		//If current character pointer reaches end of string, allocate more memory
+		if ( i >= len )
+			if ( ( str = (char *) realloc( str, ( len += step ) ) ) == NULL ) return NULL;
+		//Is character EOT or EOF? If so, set it to 0 to exit loop
+		if ( c == 4 || c == EOF )
+			c = 0;
+		str[i++] = c; //Write character to array, and increment i
+	}
+	while ( c != 0 );
+	return str;
 }
 
 //Text -> Morse conversion
