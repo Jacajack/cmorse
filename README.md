@@ -1,8 +1,10 @@
+**The development is currently put on hold - only necessary patches will be applied. No new features will be added, unless I find a new potential project maintainer. If you'd like to become one, please contact me.**
+
 # cmorse
 [![The GPL License](https://img.shields.io/badge/license-GPL-yellow.svg?style=flat-square)](https://opensource.org/licenses/GPL-3.0)
 [![Travis CI](https://img.shields.io/travis/Jacajack/cmorse.svg?style=flat-square)](https://travis-ci.org/Jacajack/cmorse)
 
-`cmorse` is a simple text to Morse code converter
+`cmorse` is a simple text to Morse code converter.
 
 [Cmorse on launchpad...](https://launchpad.net/cmorse)
 
